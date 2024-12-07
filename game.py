@@ -2,6 +2,7 @@ import pygame
 import random
 
 from unit import *
+from interface import Game_interface
 
 
 class Game:
@@ -28,6 +29,8 @@ class Game:
         screen : pygame.Surface
             La surface de la fenêtre du jeu.
         """
+        self.screen = screen
+        self.interface = Game_interface(screen)  # Utilise la classe Game_interface
         self.screen = screen
         self.player_units = [Unit(0, 0, 10, 2, 'player'),
                              Unit(1, 0, 10, 2, 'player')]
