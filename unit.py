@@ -87,3 +87,14 @@ class Unit:
                              self.y * CELL_SIZE, CELL_SIZE, CELL_SIZE))
         pygame.draw.circle(screen, color, (self.x * CELL_SIZE + CELL_SIZE //
                            2, self.y * CELL_SIZE + CELL_SIZE // 2), CELL_SIZE // 3)
+
+
+
+class Ninja:
+    def __init__(self, x, y, health=20, attack_power=10, team=None):
+        self.x = x
+        self.y = y
+        self.health = health
+        self.attack_power = attack_power
+        self.team = team
+        #self.skills = [Fireball(), Evasion()]  # Compétences pour Ninja
