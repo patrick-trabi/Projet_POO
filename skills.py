@@ -26,10 +26,19 @@ def defense_effect(user, target):
     print(f"{target.name} génère un bouclier de {shield_value} points.")
     
 # Compétences
-class Fireball(Skill):
+class Fireball:
     def __init__(self):
-        super().__init__("Fireball", power=10, range=3, aoe=1, effect=attack_effect)
+        self.name = "Fireball"
+        self.power = 10
+        self.range = 3
+        self.zone = 1  # Area of Effect
+        self.effect = attack_effect
 
-class Shield(Skill):
+class Shield:
     def __init__(self):
-        super().__init__("Shield", power=0, range=0, zone=0, effect=defense_effect)
+        self.name = "Shield"
+        self.power = 0
+        self.range = 0
+        self.zone = 0
+        self.effect = defense_effect
+
