@@ -15,16 +15,16 @@ class Game_interface:
     def __init__(self, screen):
         self.screen = screen
 
-    def draw_grid(self):
-        #Affiche la grille
+     def draw_grid(self):
+        """Affiche la grille."""
         self.screen.fill(BLACK)
         for x in range(0, WIDTH, CELL_SIZE):
-            for y in range(0, HEIGHT, CELL_SIZE):
+            for y in range(0, HEIGHT - 100, CELL_SIZE):  # Ajustement pour ne pas dessiner dans la zone des scores
                 rect = pygame.Rect(x, y, CELL_SIZE, CELL_SIZE)
                 pygame.draw.rect(self.screen, DARK_GRAY, rect, 1)
 
     def draw_units(self, player_units, enemy_units):
-        #Dessine les unités du joueur et des ennemis
+        """Dessine les unités."""
         for unit in player_units + enemy_units:
             unit.draw(self.screen)
 
@@ -35,7 +35,7 @@ class Game_interface:
             pygame.draw.rect(self.screen, BLUE_PALE, rect)
 
     def display_menu(self):
-        #Affiche le menu principal avec un bouton PLAY.
+        """Affiche le menu principal."""
         self.screen.fill(DARK_GRAY)
 
         # Affichage du titre
@@ -58,3 +58,16 @@ class Game_interface:
 
         pygame.display.flip()
         return play_button_rect
+
+    def draw_scores(self, scores):
+        """Affiche les scores et états de vie des joueurs."""
+        font = pygame.font.Font(None, 36)
+        player1_text = f"Player 1 Health: {scores['Player 1']}"
+        player2_text = f"Player 2 Health: {scores['Player 2']}"
+
+        # Affiche les scores
+        player1_surface = font.render(player1_text, True, WHITE)
+        player2_surface = font.render(player2_text, True, WHITE)
+
+        self.screen.blit(player1_surface, (10, HEIGHT - 90))
+        self.screen.blit(player2_surface, (10, HEIGHT - 50))
