@@ -42,3 +42,28 @@ class Shield:
         self.zone = 0
         self.effect = defense_effect
 
+class Arrows(Skill):
+    def __init__(self):
+        self.name = "Arrows"  # Nom de la compétence
+        self.power = 7  # Puissance de l'attaque
+        self.range = 3  # Portée de l'attaque
+        self.zone = 3  # Zone d'effet
+        self.effect = attack_effect  # Effet de la compétence
+
+
+class Evasion(Skill):
+    def __init__(self):
+        self.name = "Evasion"  # Nom de la compétence
+        self.power = 0  # Aucun dégât
+        self.range = 0  # Aucun effet de portée
+        self.zone = 0  # Pas de zone d'effet
+        self.effect = evasion_effect  # Effet défensif (évasion)
+
+
+class Slash(Skill):
+    def __init__(self):
+        self.name = "Slash"  # Nom de la compétence
+        self.power = 15  # Dégâts élevés
+        self.range = 1  # Portée de mêlée
+        self.zone = 0  # Pas de zone d'effet
+        self.effect = slash_effect  # Effet de la compétence (attaque de mêlée)
