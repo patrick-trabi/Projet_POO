@@ -28,12 +28,6 @@ class Game_interface:
         for unit in player_units + enemy_units:
             unit.draw(self.screen)
 
-    def draw_dynamic_grid(self, accessible_cells):
-        """Dessine les cases accessibles."""
-        for x, y in accessible_cells:
-            rect = pygame.Rect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE)
-            pygame.draw.rect(self.screen, BLUE_PALE, rect)
-
     def display_menu(self):
         """Affiche le menu principal."""
         self.screen.fill(DARK_GRAY)
