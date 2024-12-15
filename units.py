@@ -13,7 +13,11 @@ class Unit:
         self.is_selected = False
         self.skills = []  # Liste des compétences
 
-        # Chargement de l'image de l'unité
+        # Effet visuel temporaire
+        self.effect_color = None
+        self.effect_timer = 0
+
+        # Charger l'image de l'unité
         self.image = pygame.image.load(image_path).convert_alpha()
         self.image = pygame.transform.scale(self.image, (CELL_SIZE, CELL_SIZE))
 
@@ -24,74 +28,47 @@ class Unit:
             self.y += dy
 
     def attack(self, target):
-        """Attaque une unité cible."""
+        #Attaque une unité cible
         if abs(self.x - target.x) <= 1 and abs(self.y - target.y) <= 1:
             target.health -= self.attack_power
-
-    def activate_skill(self, skill, targets, interface):
-        """
-        Active une compétence de l'unité.
-        - skill : compétence à utiliser.
-        - targets : liste d'unités ennemies (ou cibles valides).
-        - interface : interface du jeu pour afficher les effets.
-        """
-        valid_targets = [
-            enemy for enemy in targets
-            if abs(self.x - enemy.x) <= skill.range and abs(self.y - enemy.y) <= skill.range
-        ]
-        if valid_targets:
-            target = valid_targets[0]  # Prend la première cible valide
-            skill.use(self, target)
-
-            # Affiche l'effet visuel via l'interface
-            interface.display_skill_effect(skill, target)
-
-            # Si la cible est morte, retourner True (à retirer de la liste)
-            return target.health <= 0
-        else:
-            print(f"Aucune cible valide pour {skill.name}.")
-            return False
+            target.effect_color = (255, 0, 0)  # Rouge pour un effet visuel d'attaque
+            target.effect_timer = 15  # Durée de l'effet en frames
 
     def draw(self, screen):
-        """Dessine l'unité sur la grille."""
+        #Dessine l'unité sur la grille
         if self.is_selected:
             pygame.draw.circle(
                 screen, (0, 255, 0),
                 (self.x * CELL_SIZE + CELL_SIZE // 2, self.y * CELL_SIZE + CELL_SIZE // 2),
                 CELL_SIZE // 2, 3
             )
-        # Dessiner l'icône de l'unité
-        screen.blit(self.image, (self.x * CELL_SIZE, self.y * CELL_SIZE))
+
+        # Applique un effet visuel temporaire
+        if self.effect_timer > 0:
+            temp_surface = self.image.copy()
+            temp_surface.fill(self.effect_color, special_flags=pygame.BLEND_RGBA_MULT)
+            screen.blit(temp_surface, (self.x * CELL_SIZE, self.y * CELL_SIZE))
+            self.effect_timer -= 1
+        else:
+            screen.blit(self.image, (self.x * CELL_SIZE, self.y * CELL_SIZE))
 
 
 class Ninja(Unit):
     def __init__(self, x, y, team):
-        self.x = x
-        self.y = y
-        self.health = 20
-        self.attack_power = 10
-        self.team = team
-        self.image_path = "ninja.jpg"
+        image_path = "alter_ninja.jpg" if team == 'enemy' else "ninja.jpg"
+        super().__init__(x, y, health=20, attack_power=10, team=team, image_path=image_path)
         self.skills = [Fireball(), Evasion()]
 
 
 class Samurai(Unit):
     def __init__(self, x, y, team):
-        self.x = x
-        self.y = y
-        self.health = 30
-        self.attack_power = 8
-        self.team = team
-        self.image_path = "samurai.jpg"
+        image_path = "alter_samurai.jpg" if team == 'enemy' else "samurai.jpg"
+        super().__init__(x, y, health=30, attack_power=8, team=team, image_path=image_path)
         self.skills = [Slash(), Shield()]
 
 
 class Archer(Unit):
     def __init__(self, x, y, team):
-        self.x = x
-        self.y = y
-        self.health = 15
-        self.attack_power = 7
-        self.team = team
-        self.image_path = "archer.jpg"
+        image_path = "alter_archer.jpg" if team == 'enemy' else "archer.jpg"
+        super().__init__(x, y, health=15, attack_power=7, team=team, image_path=image_path)
         self.skills = [Arrows(), Evasion()]
