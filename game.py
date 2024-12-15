@@ -12,17 +12,30 @@ class Game:
     def __init__(self, screen):
         self.screen = screen
         self.interface = Interface(screen, WIDTH, HEIGHT)
-        self.player_units = [
-            Ninja(0, 0, 'player'),
-            Samurai(1, 0, 'player'),
-            Archer(2, 0, 'player')
-        ]
+        self.player_units = []  # Les unités du joueur seront initialisées après la sélection
         self.enemy_units = [
             Ninja(6, 6, 'enemy'),
             Samurai(7, 6, 'enemy'),
             Archer(5, 6, 'enemy')
         ]
         self.selected_target = None  # Pour stocker la cible sélectionnée
+
+    def setup_game(self):
+        """Gère l'écran d'accueil et la sélection des unités."""
+        # Affiche l'écran d'accueil
+        self.interface.show_home_screen()
+
+        # Affiche l'écran de sélection des unités
+        selected_units = self.interface.show_unit_selection()
+        for unit_name in selected_units:
+            if unit_name == "Ninja":
+                self.player_units.append(Ninja(0, 0, 'player'))
+            elif unit_name == "Samurai":
+                self.player_units.append(Samurai(1, 0, 'player'))
+            elif unit_name == "Archer":
+                self.player_units.append(Archer(2, 0, 'player'))
+
+        print(f"Unités sélectionnées : {[unit.__class__.__name__ for unit in self.player_units]}")
 
     def handle_player_turn(self):
         """Gère le tour des joueurs."""
@@ -78,22 +91,23 @@ class Game:
             print("Aucune cible disponible.")
             return
 
+        current_index = 0  # Index pour naviguer dans les cibles
         while self.selected_target is None:
-            self.interface.highlight_targets(self.screen, targets)  # Affiche les cibles disponibles
+            self.interface.highlight_targets(self.screen, targets, current_index)  # Affiche les cibles disponibles
             pygame.display.flip()
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     exit()
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    # Sélection par clic
-                    mouse_x, mouse_y = event.pos
-                    grid_x, grid_y = mouse_x // CELL_SIZE, mouse_y // CELL_SIZE
-                    for target in targets:
-                        if target.x == grid_x and target.y == grid_y:
-                            self.selected_target = target
-                            break
+
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_UP:
+                        current_index = (current_index - 1) % len(targets)
+                    elif event.key == pygame.K_DOWN:
+                        current_index = (current_index + 1) % len(targets)
+                    elif event.key == pygame.K_RETURN:  # Touche Entrée pour sélectionner la cible
+                        self.selected_target = targets[current_index]
 
         # Une fois la cible sélectionnée, activez la compétence
         skill.use(user, self.selected_target)
@@ -116,6 +130,7 @@ class Game:
 
     def run(self):
         """Boucle principale du jeu."""
+        self.setup_game()  # Démarre avec l'écran d'accueil et la sélection des unités
         while True:
             self.handle_player_turn()
             self.handle_enemy_turn()
