@@ -25,6 +25,8 @@ def defense_effect(user, target):
         target.shield = shield_value  # Crée un bouclier si inexistant
     print(f"{target.name} génère un bouclier de {shield_value} points.")
     
+
+
 # Compétences
 class Fireball:
     def __init__(self):
