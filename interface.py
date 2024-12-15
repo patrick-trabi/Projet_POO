@@ -52,7 +52,7 @@ class Interface:
                     running = False
 
     def show_unit_selection(self):
-        """Affiche un écran de sélection d'unités."""
+        #Affiche un écran de sélection d'unités
         font = pygame.font.Font(None, 36)
         unit_names = ["Ninja", "Samurai", "Archer"]
         current_index = 0  # Index de l'unité en cours
@@ -103,7 +103,7 @@ class Interface:
             unit.draw(self.screen)
 
     def highlight_targets(self, screen, targets, current_index):
-        """Surligne les cibles disponibles et indique la cible actuellement sélectionnée."""
+        #Surligne les cibles disponibles et indique la cible actuellement sélectionnée
         for i, target in enumerate(targets):
             color = (255, 0, 0) if i == current_index else (255, 255, 0)
             rect = pygame.Rect(target.x * CELL_SIZE, target.y * CELL_SIZE, CELL_SIZE, CELL_SIZE)
@@ -128,4 +128,4 @@ class Interface:
         selected_unit = next((unit for unit in player_units if unit.is_selected), None)
         if selected_unit:
             self.draw_skills(selected_unit)
-        pygame.display.flip()
+        pygame.display.flip()  
