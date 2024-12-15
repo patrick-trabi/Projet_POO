@@ -1,40 +1,45 @@
 import random
 
 class Skill:
-    def __init__(self, name, power, range,zone, effect):
+    def __init__(self, name, power, range, zone, effect):
         self.name = name
         self.power = power
-        self.range = range  # Portée en cases
-        self.zone = zone # 1 pour une seule case en zone d'effet
-        self.effect = effect  # Fonction d'effet (attaque, defense, etc.)
+        self.range = range
+        self.zone = zone
+        self.effect = effect
 
     def use(self, user, target):
         self.effect(user, target)
 
-# Effets spécifiques pour les compétences
+# Effets spécifiques
 def attack_effect(user, target):
-    damage = user.attack + random.randint(0, 5)
-    target.take_damage(damage)
+    damage = user.attack_power + random.randint(0, 5)
+    target.health -= damage
 
 def defense_effect(user, target):
-    #génère un bouclier temporaire 
-    shield_value = user.speed // 2 + random.randint(5, 10)  # Calcul du bouclier
+    shield_value = user.attack_power // 2 + random.randint(5, 10)
     if hasattr(target, "shield"):
-        target.shield += shield_value  # Ajoute au bouclier existant
-    else:
-        target.shield = shield_value  # Crée un bouclier si inexistant
-    print(f"{target.name} génère un bouclier de {shield_value} points.")
-    
+        target.shield += shield_value
+
+def evasion_effect(user, target):
+    if hasattr(target, "dodge_chance"):
+        target.dodge_chance = min(100, target.dodge_chance + 20)
+
+def slash_effect(user, target):
+    if abs(user.x - target.x) <= 1 and abs(user.y - target.y) <= 1:
+        damage = user.attack_power + random.randint(5, 10)
+        target.health -= damage
+
 # Compétences
-class Fireball:
+class Fireball(Skill):
     def __init__(self):
         self.name = "Fireball"
         self.power = 10
         self.range = 3
-        self.zone = 1  # Area of Effect
+        self.zone = 1
         self.effect = attack_effect
 
-class Shield:
+class Shield(Skill):
     def __init__(self):
         self.name = "Shield"
         self.power = 0
@@ -44,26 +49,24 @@ class Shield:
 
 class Arrows(Skill):
     def __init__(self):
-        self.name = "Arrows"  # Nom de la compétence
-        self.power = 7  # Puissance de l'attaque
-        self.range = 3  # Portée de l'attaque
-        self.zone = 3  # Zone d'effet
-        self.effect = attack_effect  # Effet de la compétence
-
+        self.name = "Arrows"
+        self.power = 7
+        self.range = 3
+        self.zone = 3
+        self.effect = attack_effect
 
 class Evasion(Skill):
     def __init__(self):
-        self.name = "Evasion"  # Nom de la compétence
-        self.power = 0  # Aucun dégât
-        self.range = 0  # Aucun effet de portée
-        self.zone = 0  # Pas de zone d'effet
-        self.effect = evasion_effect  # Effet défensif (évasion)
-
+        self.name = "Evasion"
+        self.power = 0
+        self.range = 0
+        self.zone = 0
+        self.effect = evasion_effect
 
 class Slash(Skill):
     def __init__(self):
-        self.name = "Slash"  # Nom de la compétence
-        self.power = 15  # Dégâts élevés
-        self.range = 1  # Portée de mêlée
-        self.zone = 0  # Pas de zone d'effet
-        self.effect = slash_effect  # Effet de la compétence (attaque de mêlée)
+        self.name = "Slash"
+        self.power = 15
+        self.range = 1
+        self.zone = 0
+        self.effect = slash_effect
