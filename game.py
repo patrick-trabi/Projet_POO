@@ -12,30 +12,17 @@ class Game:
     def __init__(self, screen):
         self.screen = screen
         self.interface = Interface(screen, WIDTH, HEIGHT)
-        self.player_units = []  # Les unités du joueur seront initialisées après la sélection
+        self.player_units = [
+            Ninja(0, 0, 'player'),
+            Samurai(1, 0, 'player'),
+            Archer(2, 0, 'player')
+        ]
         self.enemy_units = [
             Ninja(6, 6, 'enemy'),
             Samurai(7, 6, 'enemy'),
             Archer(5, 6, 'enemy')
         ]
         self.selected_target = None  # Pour stocker la cible sélectionnée
-
-    def setup_game(self):
-        """Gère l'écran d'accueil et la sélection des unités."""
-        # Affiche l'écran d'accueil
-        self.interface.show_home_screen()
-
-        # Affiche l'écran de sélection des unités
-        selected_units = self.interface.show_unit_selection()
-        for unit_name in selected_units:
-            if unit_name == "Ninja":
-                self.player_units.append(Ninja(0, 0, 'player'))
-            elif unit_name == "Samurai":
-                self.player_units.append(Samurai(1, 0, 'player'))
-            elif unit_name == "Archer":
-                self.player_units.append(Archer(2, 0, 'player'))
-
-        print(f"Unités sélectionnées : {[unit.__class__.__name__ for unit in self.player_units]}")
 
     def handle_player_turn(self):
         """Gère le tour des joueurs."""
@@ -129,7 +116,6 @@ class Game:
 
     def run(self):
         """Boucle principale du jeu."""
-        self.setup_game()  # Démarre avec l'écran d'accueil et la sélection des unités
         while True:
             self.handle_player_turn()
             self.handle_enemy_turn()
