@@ -13,7 +13,7 @@ class Game:
         self.screen = screen
         self.interface = Interface(screen, WIDTH, HEIGHT)
         self.player_units = []  # Les unités du joueur seront initialisées après la sélection
-        self.enemy_units = [
+        self.enemy_units = [ 
             Ninja(6, 6, 'enemy'),
             Samurai(7, 6, 'enemy'),
             Archer(5, 6, 'enemy')
@@ -21,7 +21,7 @@ class Game:
         self.selected_target = None  # Pour stocker la cible sélectionnée
 
     def setup_game(self):
-        """Gère l'écran d'accueil et la sélection des unités."""
+        #Gère l'écran d'accueil et la sélection des unités
         # Affiche l'écran d'accueil
         self.interface.show_home_screen()
 
@@ -38,7 +38,7 @@ class Game:
         print(f"Unités sélectionnées : {[unit.__class__.__name__ for unit in self.player_units]}")
 
     def handle_player_turn(self):
-        """Gère le tour des joueurs."""
+        #Gère le tour des joueurs
         for unit in self.player_units:
             unit.is_selected = True
             self.interface.flip_display(self.player_units, self.enemy_units)
@@ -83,7 +83,7 @@ class Game:
                             unit.is_selected = False
 
     def select_target_and_activate_skill(self, user, skill):
-        """Permet au joueur de sélectionner une cible pour la compétence."""
+        #Permet au joueur de sélectionner une cible pour la compétence
         self.selected_target = None  # Réinitialiser la sélection
         targets = [enemy for enemy in self.enemy_units if abs(user.x - enemy.x) <= skill.range and abs(user.y - enemy.y) <= skill.range]
 
@@ -145,4 +145,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main() 
