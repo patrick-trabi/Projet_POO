@@ -1,20 +1,22 @@
 import random
 
 class Skill:
-    def __init__(self, name, power, range,zone, effect):
+    def __init__(self, name, power, range, zone, effect):
         self.name = name
         self.power = power
-        self.range = range  # Portée en cases
-        self.zone = zone # 1 pour une seule case en zone d'effet
-        self.effect = effect  # Fonction d'effet (attaque, defense, etc.)
+        self.range = range
+        self.zone = zone
+        self.effect = effect
 
     def use(self, user, target):
         self.effect(user, target)
 
-# Effets spécifiques pour les compétences
+# Effets spécifiques
 def attack_effect(user, target):
-    damage = user.attack + random.randint(0, 5)
-    target.take_damage(damage)
+    damage = user.attack_power + random.randint(0, 5)
+    target.health -= damage
+    target.effect_color = (255, 0, 0)  # Rouge pour un effet visuel temporaire
+    target.effect_timer = 15  # Durée de l'effet en frames
 
 def defense_effect(user, target):
     shield_value = user.attack_power // 2 + random.randint(5, 10)
@@ -29,23 +31,26 @@ def slash_effect(user, target):
     if abs(user.x - target.x) <= 1 and abs(user.y - target.y) <= 1:
         damage = user.attack_power + random.randint(5, 10)
         target.health -= damage
-    
+        target.effect_color = (255, 0, 0)  # Rouge pour Slash
+        target.effect_timer = 15
+
 # Compétences
-class Fireball:
+class Fireball(Skill):
     def __init__(self):
         self.name = "Fireball"
         self.power = 10
         self.range = 3
-        self.zone = 1  # Area of Effect
+        self.zone = 1
         self.effect = attack_effect
 
-class Shield:
+class Shield(Skill):
     def __init__(self):
         self.name = "Shield"
         self.power = 0
         self.range = 0
         self.zone = 0
         self.effect = defense_effect
+
 class Arrows(Skill):
     def __init__(self):
         self.name = "Arrows"
@@ -53,7 +58,6 @@ class Arrows(Skill):
         self.range = 3
         self.zone = 3
         self.effect = attack_effect
-
 
 class Evasion(Skill):
     def __init__(self):
@@ -63,7 +67,6 @@ class Evasion(Skill):
         self.zone = 0
         self.effect = evasion_effect
 
-
 class Slash(Skill):
     def __init__(self):
         self.name = "Slash"
@@ -71,3 +74,4 @@ class Slash(Skill):
         self.range = 1
         self.zone = 0
         self.effect = slash_effect
+
