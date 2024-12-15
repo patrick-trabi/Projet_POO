@@ -53,45 +53,34 @@ class Interface:
     def show_home_screen(self):
         """Affiche l'écran d'accueil avec un bouton 'Play'."""
         font = pygame.font.Font(None, 72)
-        play_button = pygame.Rect(self.width // 2 - 100, self.height // 2 - 50, 200, 100)
         running = True
 
         while running:
             self.screen.blit(self.background_home, (0, 0))  # Affiche le background de l'accueil
-            text = font.render("Play", True, BLACK)
-            pygame.draw.rect(self.screen, WHITE, play_button, border_radius=10)
-            self.screen.blit(text, (play_button.x + 50, play_button.y + 25))
+            text = font.render("Press Enter to Play", True, BLACK)
+            self.screen.blit(text, (self.width // 2 - 200, self.height // 2))
             pygame.display.flip()
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     exit()
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if play_button.collidepoint(event.pos):
-                        running = False
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:  # Touche Entrée pour jouer
+                    running = False
 
     def show_unit_selection(self):
         """Affiche un écran de sélection d'unités."""
         font = pygame.font.Font(None, 36)
         unit_names = ["Ninja", "Samurai", "Archer"]
-        unit_rects = [
-            pygame.Rect(self.width // 4 - 50, self.height // 2 - 50, 100, 100),
-            pygame.Rect(self.width // 2 - 50, self.height // 2 - 50, 100, 100),
-            pygame.Rect(3 * self.width // 4 - 50, self.height // 2 - 50, 100, 100)
-        ]
-
+        current_index = 0
         selected_units = []
-        running = True
 
-        while running:
+        while len(selected_units) < 2:
             self.screen.blit(self.background_selection, (0, 0))  # Affiche le background de la sélection
-            for idx, rect in enumerate(unit_rects):
-                pygame.draw.rect(self.screen, WHITE, rect, border_radius=10)
-                text = font.render(unit_names[idx], True, BLACK)
-                pygame.draw.rect(self.screen, (255, 255, 255), rect)
-                self.screen.blit(text, (rect.x + 15, rect.y + 35))
-
+            for idx, name in enumerate(unit_names):
+                color = (0, 255, 0) if idx == current_index else WHITE
+                text = font.render(name, True, color)
+                self.screen.blit(text, (self.width // 4 * (idx + 1) - 50, self.height // 2))
             pygame.display.flip()
 
             for event in pygame.event.get():
@@ -99,15 +88,23 @@ class Interface:
                     pygame.quit()
                     exit()
 
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    for idx, rect in enumerate(unit_rects):
-                        if rect.collidepoint(event.pos) and len(selected_units) < 2:
-                            selected_units.append(unit_names[idx])
-                            print(f"Vous avez sélectionné : {unit_names[idx]}")
-                            if len(selected_units) == 2:
-                                running = False
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_LEFT:
+                        current_index = (current_index - 1) % len(unit_names)
+                    elif event.key == pygame.K_RIGHT:
+                        current_index = (current_index + 1) % len(unit_names)
+                    elif event.key == pygame.K_RETURN:  # Touche Entrée pour sélectionner une unité
+                        selected_units.append(unit_names[current_index])
+                        print(f"Vous avez sélectionné : {unit_names[current_index]}")
 
         return selected_units
+
+    def highlight_targets(self, screen, targets, current_index):
+        """Surligne les cibles disponibles et indique la cible actuellement sélectionnée."""
+        for i, target in enumerate(targets):
+            color = (255, 0, 0) if i == current_index else (255, 255, 0)
+            rect = pygame.Rect(target.x * CELL_SIZE, target.y * CELL_SIZE, CELL_SIZE, CELL_SIZE)
+            pygame.draw.rect(screen, color, rect, 3)
 
     def draw_skills(self, unit):
         if not unit.skills:
